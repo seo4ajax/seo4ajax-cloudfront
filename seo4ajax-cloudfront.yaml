@@ -111,8 +111,7 @@ Resources:
           Compress: true
           # NOTE: we let cloudfront cache heavily the resurces of the SPA. Your deploy
           #       step will need to include an invalidation of the cloudfromt cache.
-          #       The requests to seo4ajax.io are NOT cached thanks to the X-SEO4Ajax-Cachebuster
-          #       header.
+          #       The requests to api.seo4ajax.com are also cached.
           MinTTL: 31536000
           DefaultTTL: 31536000
           ForwardedValues:
