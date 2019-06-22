@@ -1,0 +1,140 @@
+Parameters:
+  SEO4AjaxSiteToken:
+    Type: String
+Resources:
+  WebBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        ErrorDocument: index.html
+        IndexDocument: index.html
+  LambdaEdgeExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+            - edgelambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Policies:
+        - PolicyName: logging
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Resource: "*"
+                Effect: Allow
+                Action:
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+  SetSEO4AjaxHeader:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Handler: "index.handler"
+      Role:
+        Fn::GetAtt:
+          - "LambdaEdgeExecutionRole"
+          - "Arn"
+      Code:
+        ZipFile:
+          !Sub |
+            'use strict';
+            /* change the version number below whenever this code is modified */
+            exports.handler = (event, context, callback) => {
+                const request = event.Records[0].cf.request;
+                const headers = request.headers;
+                const user_agent = headers['user-agent'];
+                if (user_agent) {
+                    redirectRequest = /google|bot|yandex|spider|facebookexternalhit|pinterest/i.test(user_agent[0].value) || /_escaped_fragment_/.test(request.querystring);
+                    redirectRequest = redirectRequest && ! /\.(js|css|xml|less|png|jpg|jpeg|gif|pdf|doc|txt|ico|rss|zip|mp3|rar|exe|wmv|doc|avi|ppt|mpg|mpeg|tif|wav|mov|psd|ai|xls|mp4|m4a|swf|dat|dmg|iso|flv|m4v|torrent|ttf|woff|svg|eot)$/i.test(request.uri);
+                    if (redirectRequest) {
+                        headers['x-seo4ajax-site-token'] = [{ key: 'X-SEO4Ajax-Site-Token', value: '${SEO4AjaxSiteToken}' }];
+                    }
+                }
+                callback(null, request);
+            };
+      Runtime: "nodejs8.10"
+  SetSEO4AjaxHeaderVersion1:
+    Type: "AWS::Lambda::Version"
+    Properties:
+      FunctionName:
+        Ref: "SetSEO4AjaxHeader"
+      Description: "SetSEO4AjaxHeader"
+  RedirectToSEO4Ajax:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Handler: "index.handler"
+      Role:
+        Fn::GetAtt:
+          - "LambdaEdgeExecutionRole"
+          - "Arn"
+      Code:
+        ZipFile: |
+          'use strict';
+          /* change the version number below whenever this code is modified */
+          exports.handler = (event, context, callback) => {
+              const request = event.Records[0].cf.request;
+              if (request.headers['x-seo4ajax-site-token']) {
+                  request.origin = {
+                      custom: {
+                          domainName: 'api.seo4ajax.com',
+                          port: 443,
+                          protocol: 'https',
+                          readTimeout: 20,
+                          keepaliveTimeout: 5,
+                          customHeaders: {},
+                          sslProtocols: ['TLSv1', 'TLSv1.1'],
+                          path: '/' + request.headers['x-seo4ajax-site-token'][0].value
+                      }
+                  };
+              }
+              callback(null, request);
+          };
+      Runtime: "nodejs8.10"
+  RedirectToSEO4AjaxVersion1:
+    Type: "AWS::Lambda::Version"
+    Properties:
+      FunctionName:
+        Ref: "RedirectToSEO4Ajax"
+      Description: "RedirectToSEO4Ajax"
+  CloudFront:
+    Type: "AWS::CloudFront::Distribution"
+    Properties:
+      DistributionConfig:
+        DefaultCacheBehavior:
+          Compress: true
+          # NOTE: we let cloudfront cache heavily the resurces of the SPA. Your deploy
+          #       step will need to include an invalidation of the cloudfromt cache.
+          #       The requests to seo4ajax.io are NOT cached thanks to the X-SEO4Ajax-Cachebuster
+          #       header.
+          MinTTL: 31536000
+          DefaultTTL: 31536000
+          ForwardedValues:
+            QueryString: false
+            Headers:
+              - "X-SEO4Ajax-Site-Token"              
+          TargetOriginId: origin
+          ViewerProtocolPolicy : allow-all
+          LambdaFunctionAssociations:
+            - EventType: viewer-request
+              LambdaFunctionARN: !Join [ ":", [ !GetAtt [SetSEO4AjaxHeader, Arn], !GetAtt [SetSEO4AjaxHeaderVersion1, Version] ] ]
+            - EventType: origin-request
+              LambdaFunctionARN: !Join [ ":", [ !GetAtt [RedirectToSEO4Ajax, Arn], !GetAtt [RedirectToSEO4AjaxVersion1, Version] ] ]
+        Enabled: true
+        CustomErrorResponses:
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+        HttpVersion: http2
+        Origins:
+          - CustomOriginConfig:
+              OriginProtocolPolicy: http-only
+            DomainName: !Select [2, !Split [ '/', !GetAtt [WebBucket, WebsiteURL]]]
+            Id: origin
+        PriceClass: PriceClass_100
