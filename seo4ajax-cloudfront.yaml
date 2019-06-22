@@ -59,7 +59,7 @@ Resources:
                 }
                 callback(null, request);
             };
-      Runtime: "nodejs10.x"
+      Runtime: "nodejs8.10"
   SetSEO4AjaxHeaderVersion1:
     Type: "AWS::Lambda::Version"
     Properties:
@@ -96,7 +96,7 @@ Resources:
               }
               callback(null, request);
           };
-      Runtime: "nodejs10.x"
+      Runtime: "nodejs8.10"
   RedirectToSEO4AjaxVersion1:
     Type: "AWS::Lambda::Version"
     Properties:
