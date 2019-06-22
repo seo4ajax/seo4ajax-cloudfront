@@ -40,7 +40,8 @@ Caching
 
 By default, static resources from the bucket are cached for a long time
 period. This improves performance but means that the deploy process of
-any real app will need a Cloudfront purge step.
+any real app will need a Cloudfront purge step. The requests to 
+api.seo4ajax.com are also cached.
 
 Notes
 --
