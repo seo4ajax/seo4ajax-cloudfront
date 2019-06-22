@@ -1,14 +1,14 @@
-seo4ajax.com cloudfront example middleware
+Example of SEO4Ajax integration using Lambda@Edge functions in AWS CloudFront
 ==
 
-This is an example of integrating seo4ajax.com and a SPA in S3 served
+This is an example of integrating SEO4Ajax and a SPA in S3 served
 over Cloudfront.
 
 Instructions
 --
 
 1. Upload seo4ajax-cloudfront.yaml to Cloudformation as a new stack,
-   that'll setup the example for you. Enter your seo4ajax.com site token
+   that'll setup the example for you. Enter your SEO4Ajax site token
    when asked.
 2. Upload code.js and index.html to the S3 bucket created by
    Cloudformation in step 1.
@@ -29,7 +29,7 @@ The same page without pre-rendering:
 Implementation
 --
 
-Two Lambda@edge functions are used. The first detects bot requests on
+Two Lambda@Edge functions are used. The first detects bot requests on
 requests entering the system, it sets a header which Cloudfront uses to
 partition the cache. The second function, run after the cache, detects
 the presence of the header and, if present, routes the request to
