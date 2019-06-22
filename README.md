@@ -33,7 +33,7 @@ Two Lambda@Edge functions are used. The first detects bot requests on
 requests entering the system, it sets a header which Cloudfront uses to
 partition the cache. The second function, run after the cache, detects
 the presence of the header and, if present, routes the request to
-seo4ajax.com
+api.seo4ajax.com
 
 Caching
 --
