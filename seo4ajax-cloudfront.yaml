@@ -51,7 +51,7 @@ Resources:
                 const headers = request.headers;
                 const userAgent = headers['user-agent'];
                 if (userAgent) {
-                    let redirectRequest = /google|bot|yandex|spider|facebookexternalhit|pinterest/i.test(userAgent[0].value) || /_escaped_fragment_/.test(request.querystring);
+                    let redirectRequest = /google|bot|lighthouse|yandex|spider|facebookexternalhit|pinterest/i.test(userAgent[0].value) || /_escaped_fragment_/.test(request.querystring);
                     redirectRequest = redirectRequest && !/\.(js|css|xml|less|png|jpg|jpeg|gif|pdf|doc|txt|ico|rss|zip|mp3|rar|exe|wmv|doc|avi|ppt|mpg|mpeg|tif|wav|mov|psd|ai|xls|mp4|m4a|swf|dat|dmg|iso|flv|m4v|torrent|ttf|woff|svg|eot)$/i.test(request.uri);
                     if (redirectRequest) {
                         headers['x-seo4ajax-site-token'] = [{ key: 'X-SEO4Ajax-Site-Token', value: '${SEO4AjaxSiteToken}' }];
