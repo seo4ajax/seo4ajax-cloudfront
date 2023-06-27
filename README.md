@@ -43,6 +43,14 @@ period. This improves performance but means that the deploy process of
 any real app will need a Cloudfront purge step. The requests to 
 api.seo4ajax.com are also cached.
 
+
+Alternative
+--
+
+Amazon describes a more recent procedure for integrating a service like 
+SEO4Ajax, you can find more info here: 
+https://aws.amazon.com/blogs/networking-and-content-delivery/how-to-optimize-content-for-search-engines-with-aws-waf-bot-control-and-amazon-cloudfront/
+
 Notes
 --
 This project is a fork of https://github.com/jinty/prerender-cloudfront
