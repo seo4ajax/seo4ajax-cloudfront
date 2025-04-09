@@ -51,7 +51,7 @@ Amazon describes a more recent procedure for integrating a service like
 SEO4Ajax, you can find more info here: 
 https://aws.amazon.com/blogs/networking-and-content-delivery/how-to-optimize-content-for-search-engines-with-aws-waf-bot-control-and-amazon-cloudfront/
 
-Configuring CloudFroont cache
+Configuring CloudFront cache
 --
 Depending on your configuration, it may be useful to configure CloudFront 
 to store captures served from SEO4Ajax and intended for bots separately.
