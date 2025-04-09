@@ -51,6 +51,22 @@ Amazon describes a more recent procedure for integrating a service like
 SEO4Ajax, you can find more info here: 
 https://aws.amazon.com/blogs/networking-and-content-delivery/how-to-optimize-content-for-search-engines-with-aws-waf-bot-control-and-amazon-cloudfront/
 
+Configuring CloudFroont cache
+--
+Depending on your configuration, it may be useful to configure CloudFront 
+to store captures from SEO4Ajax and those intended for bots separately.
+
+In this case, you need to [create a "Cache policy"](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cache-key-create-cache-policy.html) 
+and a “Behavior” that uses a cache key based on the HTTP “from” header,
+as illustrated in the screenshot below. This header is provided by the 
+most popular bots (e.g. “googlebot(at)googlebot.com”,
+“bingbot(at)microsoft.com”, “support@search.yandex.ru”, 
+“gptbot(at)openai.com”, “oai-searchbot@openai.com”) and is empty
+otherwise.
+
+![image](https://github.com/user-attachments/assets/0ad5fc1f-9cca-4309-9c68-eb37f67e30d3)
+
+
 Notes
 --
 This project is a fork of https://github.com/jinty/prerender-cloudfront
