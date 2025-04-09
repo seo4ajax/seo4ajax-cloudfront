@@ -58,11 +58,11 @@ to store captures served by SEO4Ajax and intended for bots separately
 from those intended for regular users.
 
 In this case, you need to [create a "Cache policy"](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cache-key-create-cache-policy.html) 
-and a “Behavior” that uses a cache key based on the HTTP “from” header,
+and a "Behavior" that uses a cache key based on the HTTP "from" header,
 as illustrated in the screenshot below. This header is provided by the 
-most popular bots (e.g. “googlebot(at)googlebot.com”,
-“bingbot(at)microsoft.com”, “support@search.yandex.ru”, 
-“gptbot(at)openai.com”, “oai-searchbot@openai.com”) and is empty
+most popular bots (e.g. "googlebot(at)googlebot.com",
+"bingbot(at)microsoft.com", "support@search.yandex.ru", 
+"gptbot(at)openai.com", "oai-searchbot@openai.com") and is empty
 otherwise.
 
 ![image](https://github.com/user-attachments/assets/0ad5fc1f-9cca-4309-9c68-eb37f67e30d3)
