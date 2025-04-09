@@ -54,7 +54,8 @@ https://aws.amazon.com/blogs/networking-and-content-delivery/how-to-optimize-con
 Configuring CloudFront cache
 --
 Depending on your configuration, it may be useful to configure CloudFront 
-to store captures served from SEO4Ajax and intended for bots separately.
+to store captures served by SEO4Ajax and intended for robots separately 
+from those intended for regular users.
 
 In this case, you need to [create a "Cache policy"](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cache-key-create-cache-policy.html) 
 and a “Behavior” that uses a cache key based on the HTTP “from” header,
